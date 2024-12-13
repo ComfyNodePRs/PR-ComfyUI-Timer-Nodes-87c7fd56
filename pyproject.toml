@@ -1,0 +1,14 @@
+[project]
+name = "comfyuI-timer-nodes"
+description = "This project provides a set of custom timer nodes for ComfyUI. These nodes allow you to measure and append runtime information to strings or other data during your workflow. The functionality is particularly useful for debugging, performance monitoring, or annotating results with timing information."
+version = "0.1.0"
+license = {text = "MIT License"}
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Shannooty/ComfyUI-Timer-Nodes"
+
+[tool.comfy]
+PublisherId = "shannooty"
+DisplayName = "ComfyUI-Timer-Nodes"
+Icon = ""
