@@ -92,16 +92,14 @@ class TimerStringConcat:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {
-                "input_string": ("STRING",)
-            }
+            "required": {"input_string": ("STRING", )}
         }
     
     @classmethod
     def VALIDATE_INPUTS(s, **kwargs):
         return True
 
-    RETURN_TYPES = ("STRING",)
+    RETURN_TYPES = ("STRING", )
     FUNCTION = "concat_timer"
     CATEGORY = "Timer String Concat"
 
