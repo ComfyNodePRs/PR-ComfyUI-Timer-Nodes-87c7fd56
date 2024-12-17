@@ -67,7 +67,7 @@ class TimerStringConcat:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {"input_string": ("STRING", )}
+            "required": {"input_string": ("STRING", {'forceInput': True})}
         }
     
     @classmethod
@@ -108,5 +108,5 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TimerStart": "Start Timer",
-    "TimerStringConcat": "Concatenate String with Timer",
+    "TimerStringConcat": "Concatenate Current Timer",
 }
