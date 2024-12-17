@@ -59,36 +59,6 @@ class TimerStart:
     def record_start_time(self, **kwargs):
         self.timer.start_timer()
         return (list(kwargs.values()))
-    
-
-class TimerStop:
-    timer = GlobalTimer()
-    
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {"value": (any, )}, # For passthrough
-        }
-    
-    @classmethod
-    def VALIDATE_INPUTS(s, **kwargs):
-        return True
-    
-    RETURN_TYPES = ("STRING", any,)
-    FUNCTION = "append_runtime"
-    CATEGORY = "Stop Timer"
-
-    def stop_timer(self,**kwargs):
-
-        if kwargs.get("value"):
-            input_string = kwargs.get("value")
-
-        elapsed = self.timer.get_elapsed_time()
-        readable = human_readable_duration(elapsed)
-        print(f"{input_string} (Runtime: {readable})",)
-
-        formatted = f"{input_string} (Runtime: {readable})"
-        return (formatted, list(kwargs.values(),))
 
 
 class TimerStringConcat:
