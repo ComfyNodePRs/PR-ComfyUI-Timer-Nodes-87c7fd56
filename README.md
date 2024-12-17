@@ -22,7 +22,7 @@ Node List
 
 1. TimerStart
 
-Purpose: Records the start time of the workflow.
+Purpose: Restarts the global timer at the node position.
 
 Inputs:
 
@@ -32,23 +32,10 @@ Outputs:
 
 The input value is passed through unchanged.
 
-2. TimerStop
 
-Purpose: Calculates and appends the runtime since the timer was started.
+2. TimerStringConcat
 
-Inputs:
-
-value (any): Data to pass through the node.
-
-Outputs:
-
-STRING: The runtime in a human-readable format appended to the input value.
-
-value (any): The input value passed through unchanged.
-
-3. TimerStringConcat
-
-Purpose: Appends the runtime to a given string.
+Purpose: Appends the current runtime to a given string.
 
 Inputs:
 

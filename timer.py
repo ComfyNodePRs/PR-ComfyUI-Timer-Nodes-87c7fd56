@@ -1,6 +1,5 @@
 import time
-
-TIMER_START_TIME = None
+import execution
 
 
 class AnyType(str):
@@ -25,8 +24,24 @@ def human_readable_duration(seconds):
     hours, minutes = divmod(minutes, 60)
     return f"{hours}h {minutes}m {sec}s"
 
+class GlobalTimer:
+    start_time = None
+
+    @classmethod
+    def start_timer(cls):
+        cls.start_time = time.perf_counter()
+
+    @classmethod
+    def get_elapsed_time(cls):
+        if cls.start_time is not None:
+            return time.perf_counter() - cls.start_time
+        else:
+            return 0
+
 
 class TimerStart:
+    timer = GlobalTimer()
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -42,12 +57,13 @@ class TimerStart:
     CATEGORY = "Start Timer"
 
     def record_start_time(self, **kwargs):
-        global TIMER_START_TIME
-        TIMER_START_TIME = time.time()
+        self.timer.start_timer()
         return (list(kwargs.values()))
     
 
 class TimerStop:
+    timer = GlobalTimer()
+    
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -59,36 +75,25 @@ class TimerStop:
         return True
     
     RETURN_TYPES = ("STRING", any,)
-    FUNCTION = "record_start_time"
-    CATEGORY = "Start Timer"
-
-    def record_start_time(self, **kwargs):
-        global TIMER_START_TIME
-        TIMER_START_TIME = time.time()
-        return (list(kwargs.values(),))
-    
     FUNCTION = "append_runtime"
     CATEGORY = "Stop Timer"
 
     def stop_timer(self,**kwargs):
 
-        if TIMER_START_TIME is None:
-            # If no start time is recorded, just return a note
-            return ("(No runtime recorded)", list(kwargs.values(),))
-
         if kwargs.get("value"):
             input_string = kwargs.get("value")
 
-        elapsed = time.time() - TIMER_START_TIME
+        elapsed = self.timer.get_elapsed_time()
         readable = human_readable_duration(elapsed)
         print(f"{input_string} (Runtime: {readable})",)
 
-        TIMER_START_TIME = None
         formatted = f"{input_string} (Runtime: {readable})"
         return (formatted, list(kwargs.values(),))
 
 
 class TimerStringConcat:
+    timer = GlobalTimer()
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -104,17 +109,27 @@ class TimerStringConcat:
     CATEGORY = "Timer String Concat"
 
     def concat_timer(self, input_string):
-        if TIMER_START_TIME is None:
-            # If no start time is recorded, just return the original string with a note
-            return (input_string + " (No runtime recorded)",)
 
-        elapsed = time.time() - TIMER_START_TIME
+        elapsed = self.timer.get_elapsed_time()
         readable = human_readable_duration(elapsed)
         print(f"{input_string} (Runtime: {readable})",)
         
         return (f"{input_string} (Runtime: {readable})",)
     
 
+
+# Hook into the prompt execution to start the timer
+original_execute = execution.PromptExecutor.execute
+
+def new_execute(self, prompt, prompt_id, extra_data={}, execute_outputs=[]):
+    GlobalTimer.start_timer()
+    return original_execute(self, prompt, prompt_id, extra_data, execute_outputs)
+
+execution.PromptExecutor.execute = new_execute
+
+
+# Start the global timer as a fallback
+GlobalTimer.start_timer()
 
 NODE_CLASS_MAPPINGS = {
     "TimerStart": TimerStart,
